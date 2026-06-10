@@ -266,10 +266,17 @@ function initQuiz() {
 /* ===== 回到顶部 ===== */
 function initBackToTop() {
   const btn = document.getElementById('backToTop');
+  const threshold = 80; // 距离底部多少像素内视为"已到底部"
 
-  window.addEventListener('scroll', () => {
-    btn.classList.toggle('visible', window.scrollY > 600);
-  });
+  function toggleVisibility() {
+    const scrollBottom = window.scrollY + window.innerHeight;
+    const reachedBottom = scrollBottom >= document.documentElement.scrollHeight - threshold;
+    btn.classList.toggle('visible', reachedBottom);
+  }
+
+  window.addEventListener('scroll', toggleVisibility, { passive: true });
+  window.addEventListener('resize', toggleVisibility);
+  toggleVisibility();
 
   btn.addEventListener('click', () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
