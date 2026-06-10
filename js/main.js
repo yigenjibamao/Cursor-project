@@ -33,6 +33,38 @@ function initNavbar() {
       navLinks.classList.remove('open');
     });
   });
+
+  initScrollSpy(navLinks);
+}
+
+/* ===== 滚动高亮当前区域 ===== */
+function initScrollSpy(navLinks) {
+  const links = Array.from(navLinks.querySelectorAll('a'));
+  const sections = links
+    .map(link => {
+      const id = link.getAttribute('href').slice(1);
+      return id ? document.getElementById(id) : null;
+    })
+    .filter(Boolean);
+
+  function setActive(id) {
+    links.forEach(link => {
+      link.classList.toggle('active', link.getAttribute('href') === `#${id}`);
+    });
+  }
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          setActive(entry.target.id);
+        }
+      });
+    },
+    { rootMargin: '-45% 0px -50% 0px', threshold: 0 }
+  );
+
+  sections.forEach(section => observer.observe(section));
 }
 
 /* ===== 滚动渐入动画 ===== */
